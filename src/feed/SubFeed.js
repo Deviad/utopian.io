@@ -31,7 +31,7 @@ const TabPane = Tabs.TabPane;
   {
     getContributions,
     getModerations,
-    getModerators
+    getModerators,
   },
 )
 class SubFeed extends React.Component {
@@ -273,7 +273,6 @@ class SubFeed extends React.Component {
       }
 
       if (match.path.split('/')[2] === 'contributions' || match.path === '/@:name') {
-        console.log('figaaa');
         return history.push(`/@${match.params.name}/contributions/${type}`);
       }
 
@@ -291,7 +290,7 @@ class SubFeed extends React.Component {
     return (
       <div>
         <ScrollToTop />
-        {(match.path === '/@:name' && match.params.type !== 'blog') ?
+        {(match.path === '/@:name') || (match.path.split('/')[2] === 'contributions') ?
           <Tabs className="filter-tab" activeKey={match.params.status || 'all'} onTabClick={type => goTo(`${type}`)}>
             <TabPane tab={<span><Icon type="appstore-o" />All</span>} key="all" />
             <TabPane tab={<span className="md-subfeed-icons">Reviewed</span>} key="reviewed" />
@@ -300,7 +299,7 @@ class SubFeed extends React.Component {
           </Tabs> : null}
 
         {((match.path.split('/')[2] !== 'moderations') &&
-          (match.path !== '/@:name' && match.params.type !== 'blog') ||
+          (match.path !== '/@:name' && match.path.split('/')[2] !== 'contributions') ||
           (match.params.type === 'blog' && this.isModerator() && match.params.filterBy === 'review') &&
           ((match.path !== '/tasks' && !this.isTask()) ||
           ((match.path == '/tasks' || (this.isTask())) && this.isModerator() && match.params.filterBy === 'review'))) &&
@@ -322,7 +321,6 @@ class SubFeed extends React.Component {
               <TabPane tab={<span className="md-subfeed-icons"><CategoryIcon from="from-subfeed" type="tutorials" />Tutorials</span>} key="tutorials" />
               <TabPane tab={<span className="md-subfeed-icons"><CategoryIcon from="from-subfeed" type="video-tutorials" />Video Tutorials</span>} key="video-tutorials" />
               <TabPane tab={<span className="md-subfeed-icons"><CategoryIcon from="from-subfeed" type="copywriting" />Copywriting</span>} key="copywriting" />
-
             </Tabs> : null}
 
         {(match.path === '/tasks' || (this.isTask() && match.params.filterBy !== 'review')) ?
@@ -350,13 +348,13 @@ class SubFeed extends React.Component {
           </Tabs> : null}
         {(match.path.split('/')[2] === 'moderations') ? this.renderDatePicker() : null}
         <Feed
-          content={ contributions }
-          isFetching={ isFetching }
-          hasMore={ hasMore }
-          loadMoreContent={ this.loadContributions }
-          contentType={ match.params.type }
-          showBlogs = { ((match.path === "/@:name") || (match.params.type === 'blog') || (match.params.filterBy === 'review')) }
-          showTasks = { (match.path === '/tasks' || (this.isTask()) ||  (match.params.filterBy === 'review') || (match.path === '/@:name')) }
+          content={contributions}
+          isFetching={isFetching}
+          hasMore={hasMore}
+          loadMoreContent={this.loadContributions}
+          contentType={match.params.type}
+          showBlogs={((match.path === '/@:name') || (match.params.type === 'blog') || (match.params.filterBy === 'review'))}
+          showTasks={(match.path === '/tasks' || (this.isTask()) || (match.params.filterBy === 'review') || (match.path === '/@:name'))}
         />
         {!contributions.length && !isFetching && <EmptyFeed type={match.params.type} />}
       </div>
