@@ -58,7 +58,6 @@ class SubFeed extends React.Component {
     const { moderators, user } = this.props;
     return R.find(R.propEq('account', user.name))(moderators);
   }
-
   componentWillMount() {
     const { getModerators, match, history } = this.props;
     getModerators();

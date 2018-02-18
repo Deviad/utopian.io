@@ -77,13 +77,14 @@ export default class User extends React.Component {
     const { getReposByGithub, match } = this.props;
     if (!this.props.user.name) {
       this.props.getAccountWithFollowingCount({ name: this.props.match.params.name });
+      return;
     }
 
-    // getReposByGithub(match.params.name).then(res => {
-    //   this.setState({
-    //     githubProjects: res.response || []
-    //   })
-    // });
+    getReposByGithub(match.params.name).then(res => {
+      this.setState({
+        githubProjects: res.response || []
+      })
+    });
   }
 
 
@@ -97,11 +98,11 @@ export default class User extends React.Component {
     if (prevProps.user !== user) {
       const isOnwer = authenticatedUser && authenticatedUser.name === match.params.name;
 
-      // getReposByGithub(match.params.name, isOnwer).then(res => {
-      //   this.setState({
-      //     githubProjects: res.response || []
-      //   })
-      // });
+      getReposByGithub(match.params.name, isOnwer).then(res => {
+        this.setState({
+          githubProjects: res.response || []
+        })
+      });
     }
   }
 
